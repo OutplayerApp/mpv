@@ -208,9 +208,9 @@ coreaudio_error:
 
 static void stop(struct ao *ao)
 {
-    struct priv *p = ao->priv;
-    OSStatus err = AudioOutputUnitStop(p->audio_unit);
-    CHECK_CA_WARN("can't stop audio unit");
+    // struct priv *p = ao->priv;
+    // OSStatus err = AudioOutputUnitStop(p->audio_unit);
+    // CHECK_CA_WARN("can't stop audio unit");
 }
 
 static void start(struct ao *ao)
@@ -231,10 +231,10 @@ static void uninit(struct ao *ao)
     AudioUnitUninitialize(p->audio_unit);
     AudioComponentInstanceDispose(p->audio_unit);
 
-    [AVAudioSession.sharedInstance
-        setActive:NO
-        withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation
-        error:nil];
+    // [AVAudioSession.sharedInstance
+    //     setActive:NO
+    //     withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation
+    //     error:nil];
 }
 
 static int init(struct ao *ao)
