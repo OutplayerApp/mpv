@@ -144,7 +144,7 @@ static int mapper_init(struct ra_hwdec_mapper *mapper)
 
     for (int n = 0; n < p->desc.num_planes; n++) {
         p->desc.planes[n] = find_la_variant(mapper->ra, p->desc.planes[n]);
-        if (!p->desc.planes[n] || p->desc.planes[n]->ctype != RA_CTYPE_UNORM) {
+        if (!p->desc.planes[n]) {
             MP_ERR(mapper, "Format unsupported.\n");
             return -1;
         }
@@ -220,9 +220,11 @@ static int mapper_map(struct ra_hwdec_mapper *mapper)
             return -1;
         }
 
+        bool allow_linear = fmt->ctype != RA_CTYPE_UINT;
+
         gl->BindTexture(GL_TEXTURE_2D, CVOpenGLESTextureGetName(p->gl_planes[i]));
-        gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, allow_linear ? GL_LINEAR : GL_NEAREST);
+        gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, allow_linear ? GL_LINEAR : GL_NEAREST);
         gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         gl->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         gl->BindTexture(GL_TEXTURE_2D, 0);
@@ -234,7 +236,7 @@ static int mapper_map(struct ra_hwdec_mapper *mapper)
             .d = 1,
             .format = fmt,
             .render_src = true,
-            .src_linear = true,
+            .src_linear = allow_linear ? true : false,
         };
 
         mapper->tex[i] = ra_create_wrapped_tex(

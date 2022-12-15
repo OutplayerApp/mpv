@@ -104,7 +104,7 @@ static const char *plane_names[] = {
 struct image {
     enum plane_type type; // must be set to something non-zero
     int components; // number of relevant coordinates
-    float multiplier; // multiplier to be used when sampling
+    double multiplier; // multiplier to be used when sampling
     struct ra_tex *tex;
     int w, h; // logical size (after transformation)
     struct gl_transform transform; // rendering transformation
@@ -814,7 +814,7 @@ static void pass_get_images(struct gl_video *p, struct video_image *vimg,
         int msb_valid_bits =
             p->ra_format.component_bits + MPMIN(p->ra_format.component_pad, 0);
         int csp = type == PLANE_ALPHA ? MP_CSP_RGB : p->image_params.color.space;
-        float tex_mul =
+        double tex_mul =
             1.0 / mp_get_csp_mul(csp, msb_valid_bits, p->ra_format.component_bits);
         if (p->ra_format.component_type == RA_CTYPE_FLOAT)
             tex_mul = 1.0;
@@ -1356,8 +1356,8 @@ static void copy_image(struct gl_video *p, int *offset, struct image img)
         img.multiplier *= 1.0 / (tex_max - 1);
     }
 
-    GLSLF("color.%s = %f * vec4(texture(texture%d, texcoord%d)).%s;\n",
-          dst, img.multiplier, id, id, src);
+    GLSLF("color.%s = %.*f * vec4(texture(texture%d, texcoord%d)).%s;\n",
+          dst, DBL_DIG, img.multiplier, id, id, src);
 
     *offset += count;
 }
