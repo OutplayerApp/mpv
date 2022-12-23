@@ -141,6 +141,8 @@ struct mp_colorspace {
     enum mp_csp_trc gamma;
     enum mp_csp_light light;
     float sig_peak; // highest relative value in signal. 0 = unknown/auto
+    float min_luminance;
+    float max_luminance;
 };
 
 // For many colorspace conversions, in particular those involving HDR, an

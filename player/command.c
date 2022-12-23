@@ -2233,6 +2233,8 @@ static int property_imgparams(struct mp_image_params p, int action, void *arg)
         {"gamma",
             SUB_PROP_STR(m_opt_choice_str(mp_csp_trc_names, p.color.gamma))},
         {"sig-peak", SUB_PROP_FLOAT(p.color.sig_peak)},
+        {"min-luminance", SUB_PROP_FLOAT(p.color.min_luminance)},
+        {"max-luminance", SUB_PROP_FLOAT(p.color.max_luminance)},
         {"light",
             SUB_PROP_STR(m_opt_choice_str(mp_csp_light_names, p.color.light))},
         {"chroma-location",

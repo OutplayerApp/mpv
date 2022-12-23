@@ -128,6 +128,10 @@ void mp_colorspace_merge(struct mp_colorspace *orig, struct mp_colorspace *new)
         orig->gamma = new->gamma;
     if (!orig->sig_peak)
         orig->sig_peak = new->sig_peak;
+    if (!orig->min_luminance)
+        orig->min_luminance = new->min_luminance;
+    if (!orig->max_luminance)
+        orig->max_luminance = new->max_luminance;
     if (!orig->light)
         orig->light = new->light;
 }
@@ -874,7 +878,9 @@ bool mp_colorspace_equal(struct mp_colorspace c1, struct mp_colorspace c2)
            c1.primaries == c2.primaries &&
            c1.gamma == c2.gamma &&
            c1.light == c2.light &&
-           c1.sig_peak == c2.sig_peak;
+           c1.sig_peak == c2.sig_peak &&
+           c1.min_luminance == c2.min_luminance &&
+           c1.max_luminance == c2.max_luminance;
 }
 
 #define OPT_BASE_STRUCT struct mp_csp_equalizer_opts

@@ -47,6 +47,8 @@ struct vf_format_opts {
     int primaries;
     int gamma;
     float sig_peak;
+    float min_luminance;
+    float max_luminance;
     int light;
     int chroma_location;
     int stereo_in;
@@ -83,6 +85,10 @@ static void set_params(struct vf_format_opts *p, struct mp_image_params *out,
     }
     if (p->sig_peak)
         out->color.sig_peak = p->sig_peak;
+    if (p->min_luminance)
+        out->color.min_luminance = p->min_luminance;
+    if (p->max_luminance)
+        out->color.max_luminance = p->max_luminance;
     if (p->light)
         out->color.light = p->light;
     if (p->chroma_location)
@@ -207,6 +213,8 @@ static const m_option_t vf_opts_fields[] = {
     {"primaries", OPT_CHOICE_C(primaries, mp_csp_prim_names)},
     {"gamma", OPT_CHOICE_C(gamma, mp_csp_trc_names)},
     {"sig-peak", OPT_FLOAT(sig_peak)},
+    {"min-luminance", OPT_FLOAT(min_luminance)},
+    {"max-luminance", OPT_FLOAT(max_luminance)},
     {"light", OPT_CHOICE_C(light, mp_csp_light_names)},
     {"chroma-location", OPT_CHOICE_C(chroma_location, mp_chroma_names)},
     {"stereo-in", OPT_CHOICE_C(stereo_in, mp_stereo3d_names)},

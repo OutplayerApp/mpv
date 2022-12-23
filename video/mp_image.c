@@ -1004,10 +1004,13 @@ struct mp_image *mp_image_from_av_frame(struct AVFrame *src)
 
     // Otherwise, try getting the mastering metadata if available
     sd = av_frame_get_side_data(src, AV_FRAME_DATA_MASTERING_DISPLAY_METADATA);
-    if (!dst->params.color.sig_peak && sd) {
+    if (sd) {
         AVMasteringDisplayMetadata *mdm = (AVMasteringDisplayMetadata *)sd->data;
-        if (mdm->has_luminance)
+        if (mdm->has_luminance) {
             dst->params.color.sig_peak = av_q2d(mdm->max_luminance) / MP_REF_WHITE;
+            dst->params.color.min_luminance = av_q2d(mdm->min_luminance);
+            dst->params.color.max_luminance = av_q2d(mdm->max_luminance);
+        }
     }
 
     sd = av_frame_get_side_data(src, AV_FRAME_DATA_A53_CC);

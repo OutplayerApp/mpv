@@ -593,13 +593,20 @@ static void parse_trackcolour(struct demuxer *demuxer, struct mkv_track *track,
         track->color.sig_peak = colour->max_cll / MP_REF_WHITE;
         MP_DBG(demuxer, "|    + MaxCLL: %"PRIu64"\n", colour->max_cll);
     }
-    // if MaxCLL is unavailable, try falling back to the mastering metadata
-    if (!track->color.sig_peak && colour->n_mastering_metadata) {
+    if (colour->n_mastering_metadata) {
         struct ebml_mastering_metadata *mastering = &colour->mastering_metadata;
 
-        if (mastering->n_luminance_max) {
+        if (!track->color.sig_peak && mastering->n_luminance_max) {
             track->color.sig_peak = mastering->luminance_max / MP_REF_WHITE;
             MP_DBG(demuxer, "|    + HDR peak: %f\n", track->color.sig_peak);
+        }
+        if (mastering->n_luminance_min) {
+            track->color.min_luminance = mastering->luminance_min;
+            MP_DBG(demuxer, "|    + Min Luminance: %f\n", track->color.min_luminance);
+        }
+        if (mastering->n_luminance_max) {
+            track->color.max_luminance = mastering->luminance_max;
+            MP_DBG(demuxer, "|    + Max Luminance: %f\n", track->color.max_luminance);
         }
     }
 }
