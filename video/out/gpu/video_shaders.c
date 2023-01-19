@@ -860,7 +860,8 @@ void pass_color_map(struct gl_shader_cache *sc, bool is_linear,
     // operations needs it
     bool need_linear = src.gamma != dst.gamma ||
                        src.primaries != dst.primaries ||
-                       src.sig_peak != dst.sig_peak ||
+                       src.sig_peak > dst.sig_peak ||
+                       (src.sig_peak != dst.sig_peak && !mp_trc_is_hdr(dst.gamma)) ||
                        need_ootf;
 
     if (need_linear && !is_linear) {
