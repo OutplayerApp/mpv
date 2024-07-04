@@ -28,14 +28,14 @@
 #include "audio/format.h"
 #include "osdep/mac/compat.h"
 
-#if HAVE_COREAUDIO || HAVE_AVFOUNDATION
+#if HAVE_COREAUDIO
 #include "audio/out/ao_coreaudio_properties.h"
 #include <CoreAudio/HostTime.h>
 #else
 #include <mach/mach_time.h>
 #endif
 
-#if HAVE_COREAUDIO || HAVE_AVFOUNDATION
+#if HAVE_COREAUDIO
 static bool ca_is_output_device(struct ao *ao, AudioDeviceID dev)
 {
     size_t n_buffers;
@@ -300,7 +300,7 @@ int64_t ca_frames_to_ns(struct ao *ao, uint32_t frames)
 
 int64_t ca_get_latency(const AudioTimeStamp *ts)
 {
-#if HAVE_COREAUDIO || HAVE_AVFOUNDATION
+#if HAVE_COREAUDIO
     uint64_t out = AudioConvertHostTimeToNanos(ts->mHostTime);
     uint64_t now = AudioConvertHostTimeToNanos(AudioGetCurrentHostTime());
 
@@ -323,7 +323,7 @@ int64_t ca_get_latency(const AudioTimeStamp *ts)
 #endif
 }
 
-#if HAVE_COREAUDIO || HAVE_AVFOUNDATION
+#if HAVE_COREAUDIO
 bool ca_stream_supports_compressed(struct ao *ao, AudioStreamID stream)
 {
     AudioStreamRangedDescription *formats = NULL;

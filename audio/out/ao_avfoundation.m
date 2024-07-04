@@ -206,10 +206,12 @@ static int control(struct ao *ao, enum aocontrol cmd, void *arg)
     return self;
 }
 - (void)handleRestartNotification:(NSNotification*)notification {
+#if HAVE_COREAUDIO
     char *name = cfstr_get_cstr((CFStringRef)notification.name);
     MP_WARN(ao, "restarting due to system notification; this will cause desync\n");
     MP_VERBOSE(ao, "notification name: %s\n", name);
     talloc_free(name);
+#endif
     stop(ao);
     start(ao);
 }
@@ -249,9 +251,11 @@ static int init(struct ao *ao)
         goto error;
     }
 
+#if HAVE_COREAUDIO
     if (ao->device && ao->device[0]) {
         [p->renderer setAudioOutputDeviceUniqueID:(NSString*)cfstr_from_cstr(ao->device)];
     }
+#endif
 
     [p->synchronizer addRenderer:p->renderer];
 #if HAVE_MACOS_11_3_FEATURES
@@ -362,6 +366,8 @@ const struct ao_driver audio_out_avfoundation = {
     .reset          = stop,
     .start          = start,
     .set_pause      = set_pause,
+#if HAVE_COREAUDIO
     .list_devs      = ca_get_device_list,
+#endif
     .priv_size      = sizeof(struct priv),
 };

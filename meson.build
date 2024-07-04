@@ -838,10 +838,6 @@ if features['audiounit'] or features['coreaudio'] or features['avfoundation']
                      'audio/out/ao_coreaudio_utils.c')
 endif
 
-if features['avfoundation']
-    sources += files('audio/out/ao_coreaudio_properties.c')
-endif
-
 jack_opt = get_option('jack').require(
     get_option('gpl'),
     error_message: 'the build is not GPL!',
