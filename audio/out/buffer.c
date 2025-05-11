@@ -143,8 +143,22 @@ static int read_buffer(struct ao *ao, void **data, int samples, bool *eof,
 
         int copy = mp_aframe_get_size(p->pending);
         uint8_t **fdata = mp_aframe_get_data_ro(p->pending);
+
+        if (!fdata) {
+            MP_ERR(ao, "Invalid fdata pointer in read_buffer.\n");
+            return 0;
+        }
+
         copy = MPMIN(copy, samples - pos);
         for (int n = 0; n < ao->num_planes; n++) {
+            if (!fdata[n]) {
+                MP_ERR(ao, "Invalid fdata[%d] pointer in read_buffer.\n", n);
+                return 0;
+            }
+            if (!data[n]) {
+                MP_ERR(ao, "Invalid data[%d] pointer in read_buffer.\n", n);
+                return 0;
+            }
             memcpy((char *)data[n] + pos * ao->sstride,
                    fdata[n], copy * ao->sstride);
         }
