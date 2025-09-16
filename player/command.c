@@ -1612,6 +1612,22 @@ static int mp_property_demuxer_start_time(void *ctx, struct m_property *prop,
     return m_property_double_ro(action, arg, mpctx->demuxer->start_time);
 }
 
+static int mp_property_demuxer_underrun(void *ctx, struct m_property *prop,
+                                        int action, void *arg)
+{
+    MPContext *mpctx = ctx;
+    // If no demuxer yet but we're actively opening a stream, consider it underrun
+    if (!mpctx->demuxer) {
+        bool opening_stream = mpctx->open_active && !mpctx->stop_play;
+        return m_property_bool_ro(action, arg, opening_stream);
+    }
+
+    struct demux_reader_state s;
+    demux_get_reader_state(mpctx->demuxer, &s);
+
+    return m_property_bool_ro(action, arg, s.underrun);
+}
+
 static int mp_property_paused_for_cache(void *ctx, struct m_property *prop,
                                         int action, void *arg)
 {
@@ -4401,6 +4417,7 @@ static const struct m_property mp_properties_base[] = {
     {"demuxer-cache-idle", mp_property_demuxer_cache_idle},
     {"demuxer-start-time", mp_property_demuxer_start_time},
     {"demuxer-cache-state", mp_property_demuxer_cache_state},
+    {"demuxer-underrun", mp_property_demuxer_underrun},
     {"cache-buffering-state", mp_property_cache_buffering},
     {"paused-for-cache", mp_property_paused_for_cache},
     {"demuxer-via-network", mp_property_demuxer_is_network},
@@ -4608,7 +4625,7 @@ static const char *const *const mp_event_property_change[] = {
     E(MP_EVENT_CACHE_UPDATE,
       "demuxer-cache-duration", "demuxer-cache-idle", "paused-for-cache",
       "demuxer-cache-time", "cache-buffering-state", "cache-speed",
-      "demuxer-cache-state"),
+      "demuxer-cache-state", "demuxer-underrun"),
     E(MP_EVENT_WIN_RESIZE, "current-window-scale", "osd-width", "osd-height",
       "osd-par", "osd-dimensions"),
     E(MP_EVENT_WIN_STATE, "display-names", "display-fps", "display-width",
