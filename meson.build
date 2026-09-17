@@ -1423,6 +1423,7 @@ ios_gl = cc.has_header_symbol('OpenGLES/ES3/glext.h', 'GL_RGB32F', required:
     get_option('ios-gl').require(darwin))
 features += {'ios-gl': ios_gl}
 if features['ios-gl']
+    dependencies += dependency('appleframeworks', modules: ['OpenGLES', 'CoreVideo'])
     sources += files('video/out/hwdec/hwdec_ios_gl.m')
 endif
 
