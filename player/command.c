@@ -2080,6 +2080,8 @@ static int get_track_entry(int item, int action, void *arg, void *ctx)
         {"ff-index",    SUB_PROP_INT(track->ff_index)},
         {"hls-bitrate", SUB_PROP_INT(track->hls_bitrate),
                         .unavailable = !track->hls_bitrate},
+        {"hls-playlist-id", SUB_PROP_INT(track->hls_playlist_id),
+                            .unavailable = track->hls_playlist_id < 0},
         {"program-id",  SUB_PROP_INT(track->program_id),
                         .unavailable = track->program_id < 0},
         {"decoder",     SUB_PROP_STR(p.decoder),

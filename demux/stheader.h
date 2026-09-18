@@ -52,6 +52,7 @@ struct sh_stream {
     bool image;                 // video stream is an image
     bool still_image;           // video consists of multiple sparse still images
     int hls_bitrate;
+    int hls_playlist_id; // HLS media playlist index, or -1 if unavailable.
     int program_id;
 
     struct mp_tags *tags;

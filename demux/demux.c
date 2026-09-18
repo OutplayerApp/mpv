@@ -955,6 +955,7 @@ struct sh_stream *demux_alloc_sh_stream(enum stream_type type)
         .ff_index = -1,     // may be overwritten by demuxer
         .demuxer_id = -1,   // ... same
         .program_id = -1,   // ... same
+        .hls_playlist_id = -1,
         .codec = talloc_zero(sh, struct mp_codec_params),
         .tags = talloc_zero(sh, struct mp_tags),
     };
@@ -1254,6 +1255,7 @@ static struct sh_stream *demuxer_get_cc_track_locked(struct sh_stream *stream)
         sh->codec->codec = "eia_608";
         sh->default_track = true;
         sh->hls_bitrate = stream->hls_bitrate;
+        sh->hls_playlist_id = stream->hls_playlist_id;
         sh->program_id = stream->program_id;
         stream->ds->cc = sh;
         demux_add_sh_stream_locked(stream->ds->in, sh);

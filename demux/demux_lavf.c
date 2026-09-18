@@ -852,6 +852,9 @@ static void handle_new_stream(demuxer_t *demuxer, int i)
         if (lang && lang->value && strcmp(lang->value, "und") != 0)
             sh->lang = talloc_strdup(sh, lang->value);
         sh->hls_bitrate = dict_get_decimal(st->metadata, "variant_bitrate", 0);
+        // FFmpeg assigns the originating media playlist index to HLS streams.
+        if (strcmp(priv->avif->name, "hls") == 0)
+            sh->hls_playlist_id = st->id;
         AVProgram *prog = av_find_program_from_stream(avfc, NULL, i);
         if (prog)
             sh->program_id = prog->id;
